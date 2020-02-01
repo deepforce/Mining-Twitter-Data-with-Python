@@ -22,7 +22,7 @@ second_request()
 
 #### Search versus Stream
 Twitter provides more than a single API. In fact, it will be explained in the following section that there is more than one way to access Twitter data. To keep things simple, we can categorize our options into two classes: **REST APIs** and **Streaming API**:
-![img](.\imgs\2114_02_01.jpg)
+![img](./imgs/2114_02_01.jpg)
 <div align="center">
 Figure 2.1: The time dimension of searching versus streaming
 </div>
