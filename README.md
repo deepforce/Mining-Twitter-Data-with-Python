@@ -44,3 +44,31 @@ Once the environment is set up, we will wrap the Tweepy calls to create the Twit
 
 The reason for breaking the logic down into two separate functions is that **the authentication code can also be reused for the Streaming API**, as we'll discuss in the following sections.
 
+As a Twitter user, your **home timeline** is the screen that you see when you log in to Twitter. It contains a sequence of tweets from the accounts you've chosen to follow, with the most recent and interesting tweets at the top.
+
+`tweepy.Cursor` is an *iterable* object, meaning that it provides an easy-to-use interface to perform iteration and pagination over different objects.
+
+The `status` variable used in the iteration represents an instance of `tweepy.Status`, which is a model used by Tweepy to wrap statuses (that is, tweets). 
+
+**The JSON Lines format**  
+The file in the preceding example has a .jsonl extension rather than just .json. In fact, this file is in the JSON Lines format (http://jsonlines.org/), meaning that each line of the file is a valid JSON document.  
+
+Trying to load the entire content of this file with, for example, `json.loads()` will raise `ValueError` as the entire content is not a valid JSON document. Rather, if we're using functions that expect valid JSON documents, we need to process one line at a time.
+
+The JSON Lines format is particularly well suited for **large-scale processing**: many big data frameworks allow the developers to easily split the input file into chunks that can be processed in parallel by different workers.
+
+**Note:** we can only retrieve up to the most recent 800 tweets from our `home timeline`.
+If we retrieve tweets from a specific user timeline, that is, using the `user_timeline` method rather than `home_timeline`, this limit is increased to 3,200.
+
+This example shows two interesting aspects to consider when analyzing tweets, as follows:
+- The entities are already labeled
+- The user profile is fully embedded
+
+The first point means that entity analysis is simplified as we do not need to explicitly search for entities such as hashtags, user mentions, embedded URLs, or media, because these are all provided by the Twitter API together with their offset within the text (the attribute called indices).
+
+The second point means that we do not need to store user profile information somewhere else and then join/merge the data via a foreign key, for example. The user profile is, in fact, redundantly replicated within each tweet.
+
+**Note:** Working with denormalized data  
+The approach of embedding redundant data is related to the concept of denormalization. While normalization is considered a good practice in relational database design, denormalization finds its role in large-scale processing and databases that belong to the wide NoSQL family.
+
+The rationale behind this approach is that the additional disk space required to redundantly store the user profile only has a marginal cost, while the gain (in terms of performances) obtained by removing the need for a join/merge operation is substantial.
